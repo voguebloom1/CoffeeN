@@ -4,7 +4,8 @@ const controller = require('./food.controller');
 router.get('/foods/search', controller.searchFood);
 router.get('/foods', controller.getFoods);
 router.get('/foods/:id', controller.getFoodbyId);
-router.post('/foods', controller.updateFoods);
+router.put('/foods/:id', controller.updateFoods);
+router.post('/foods', controller.createFood);
 
 // router.get('/foods/importcsv', controller.importCsv)
 

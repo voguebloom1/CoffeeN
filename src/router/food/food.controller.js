@@ -13,9 +13,49 @@ const index = 'foods';
 const type = 'food';
 
 
+exports.createFood = async (req, res) => {
+  const { count } = await client.count({
+    index: index
+  });
+
+  const response = await client.create({
+    index: index,
+    type: type,
+    id: count + 1,
+    body: req.body
+  });
+  res.json(response);
+}
+
 // Food 정보 업데이트 API
-exports.updateFoods = (req, res) => {
-    res.sendStatus(200);
+exports.updateFoods = async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    const food = req.body;
+    const response = await client.update({
+      index: index,
+      type: type,
+      id: id,
+      body: { 
+        doc: {
+          food_group:     food.food_group,
+          food_name:      food.food_name,
+          size:           food.size,
+          calorie:        food.calorie,
+          carbohydreate:   food.carbohydrate,
+          protein:        food.protein,
+          fat:            food.fat,
+          sugars:         food.sugars,
+          salt:           food.salt,
+          cholesterol:    food.cholesterol,
+          saturaated_fat: food.saturaated_fat,
+          trans_fat:      food.trans_fat,
+          caffeine:       food.caffeine,
+          year:           food.year
+        }
+      }
+    });
+    res.json(response);
 }
 
 // Food 정보 Search API
