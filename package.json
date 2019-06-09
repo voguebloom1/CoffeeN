@@ -1,0 +1,28 @@
+{
+  "name": "food_back_server",
+  "version": "0.0.1",
+  "description": "food api server",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fireworkproject/food_back_server"
+  },
+  "author": "botstation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fireworkproject/food_back_server/issues"
+  },
+  "homepage": "https://github.com/fireworkproject/food_back_server#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "elasticsearch": "^14.0.0",
+    "elasticsearch-csv": "0.0.3",
+    "express": "^4.16.3",
+    "nodemon": "^1.19.1",
+    "path": "^0.12.7",
+    "request": "^2.85.0"
+  }
+}
