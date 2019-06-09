@@ -17,14 +17,22 @@ exports.createFood = async (req, res) => {
   const { count } = await client.count({
     index: index
   });
-
-  const response = await client.create({
-    index: index,
-    type: type,
-    id: count + 1,
-    body: req.body
-  });
-  res.json(response);
+  const food = req.body;
+  if(isValidFoodData(food)) {
+    try {
+      const response = await client.create({
+        index: index,
+        type: type,
+        id: count + 1,
+        body: food
+      });
+      res.json(response);
+    } catch(e) {
+      res.send("ElasticSearch Something Wrong");
+    }
+  } else {
+    res.send("Invalid Data, Please Check Food Data Spec");
+  }
 }
 
 // Food 정보 업데이트 API
@@ -122,6 +130,27 @@ exports.getFoodbyId = async (req, res) => {
     }catch(e){
       res.send("Not Found");
     }
+}
+
+isValidFoodData = (food) => {
+  let isValid = false;
+  if(food.food_group != undefined 
+    && food.food_name != undefined 
+    && food.size != undefined
+    && food.calorie != undefined
+    && food.carbohydrate != undefined
+    && food.protein != undefined
+    && food.fat != undefined
+    && food.sugars != undefined
+    && food.salt != undefined
+    && food.cholesterol != undefined
+    && food.saturaated_fat != undefined
+    && food.trans_fat != undefined
+    && food.caffeine != undefined
+    && food.year != undefined) {
+      isValid = true;
+    }
+  return isValid;
 }
 
 // exports.importCsv = (req, res) => {
