@@ -12,7 +12,9 @@ var client = new elasticsearch.Client({
 const index = 'foods';
 const type = 'food';
 
-
+// Food 정보 Create API
+// @param Object Food
+// @method POST
 exports.createFood = async (req, res) => {
   const { count } = await client.count({
     index: index
