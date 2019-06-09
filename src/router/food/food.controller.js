@@ -52,7 +52,7 @@ exports.updateFoods = async (req, res) => {
           food_name:      food.food_name,
           size:           food.size,
           calorie:        food.calorie,
-          carbohydreate:   food.carbohydrate,
+          carbohydreate:  food.carbohydrate,
           protein:        food.protein,
           fat:            food.fat,
           sugars:         food.sugars,
@@ -73,8 +73,10 @@ exports.updateFoods = async (req, res) => {
 // @method Get
 exports.searchFood = async (req, res) => {
 
-    const { foodName } =  req.query;
-    console.log(foodName);
+    let { foodName, page } =  req.query;
+    if(page == undefined){
+      page = 1;
+    }  
     const response = await client.search({
         index: index,
         type: type,
@@ -90,33 +92,59 @@ exports.searchFood = async (req, res) => {
 
     const foods = new Array();
     const hits = response.hits.hits;
+    const total = response.hits.total;
     for(let hit of hits){
-      // console.log(hit._source);
+      console.log(hit._source);
       if(hit._source.food_name.includes(' | ')){
         try{
           const strs = hit._source.food_name.split(' | ');
-          hit._source.food_name = strs[strs.length-1];
+          hit._source.food_name = strs[strs.length-1].trim();
         }catch(e){
           console.log(e);
         }
       }
       foods.push(hit._source);
     }
-    res.json({foods : foods});
+    res.json({size: foods.length, total: total, page: page, foods : foods});
 }
 
 // Food List API
 exports.getFoods = async (req, res) => {
+  let { page, size } = req.query;
+  if(page == undefined){
+    page = 0;
+  }  
+  if(size == undefined){
+    size = 10;
+  }
   const response = await client.search({
-    index: 'foodtest',
-    type: 'food',
+    index: index,
+    type: type,
     body: {
+      "from": page,
+      "size": size,
       query: {
           match_all: {}
+        }
+      }
+  });
+
+  const foods = new Array();
+  const hits = response.hits.hits;
+  const total = response.hits.total;
+  for(let hit of hits){
+    console.log(hit._source);
+    if(hit._source.food_name.includes(' | ')){
+      try{
+        const strs = hit._source.food_name.split(' | ');
+        hit._source.food_name = strs[strs.length-1].trim();
+      }catch(e){
+        console.log(e);
+      }
     }
+    foods.push(hit._source);
   }
-});
-    res.json(response);
+  res.json({size: foods.length, total: total, page: page, foods : foods});
 }
 
 // Food List API

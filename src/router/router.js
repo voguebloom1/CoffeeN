@@ -2,7 +2,7 @@ const express = require('express');
 const food = require('./food');
 const router = express.Router();
 
-router.use('/svc', food);
+router.use('/', food);
 
 
 module.exports = router;
