@@ -74,10 +74,13 @@ exports.updateFoods = async (req, res) => {
 exports.searchFood = async (req, res) => {
 
     let { foodName, page } =  req.query;
+    console.log(req.query);
     if(page == undefined){
       page = 1;
     }  
-    const response = await client.search({
+    let response
+    try{
+      response = await client.search({
         index: index,
         type: type,
         body: {
@@ -88,24 +91,13 @@ exports.searchFood = async (req, res) => {
           },
             "explain": true
         }
-    });
-
-    const foods = new Array();
-    const hits = response.hits.hits;
-    const total = response.hits.total;
-    for(let hit of hits){
-      console.log(hit._source);
-      if(hit._source.food_name.includes(' | ')){
-        try{
-          const strs = hit._source.food_name.split(' | ');
-          hit._source.food_name = strs[strs.length-1].trim();
-        }catch(e){
-          console.log(e);
-        }
-      }
-      foods.push(hit._source);
+      });
+    }catch(e){screen
+      response = undefined;
     }
-    res.json({size: foods.length, total: total, page: page, foods : foods});
+    const json = generateResponseJson(response);
+    json.page = page;
+    res.json(json);
 }
 
 // Food List API
@@ -128,23 +120,9 @@ exports.getFoods = async (req, res) => {
         }
       }
   });
-
-  const foods = new Array();
-  const hits = response.hits.hits;
-  const total = response.hits.total;
-  for(let hit of hits){
-    console.log(hit._source);
-    if(hit._source.food_name.includes(' | ')){
-      try{
-        const strs = hit._source.food_name.split(' | ');
-        hit._source.food_name = strs[strs.length-1].trim();
-      }catch(e){
-        console.log(e);
-      }
-    }
-    foods.push(hit._source);
-  }
-  res.json({size: foods.length, total: total, page: page, foods : foods});
+  const json = generateResponseJson(response);
+  json.page = page;
+  res.json(json);
 }
 
 // Food List API
@@ -181,6 +159,37 @@ isValidFoodData = (food) => {
       isValid = true;
     }
   return isValid;
+}
+
+generateResponseJson = (response, page) => {
+
+  const foods = new Array();
+
+  let json = new Object;
+  if(response && response.hits){
+    const hits = response.hits.hits;
+    const total = response.hits.total;
+    // 제목 가공
+    for(let hit of hits){
+      if(hit._source.food_name.includes(' | ')){
+        try{
+          const strs = hit._source.food_name.split(' | ');
+          hit._source.food_name = strs[strs.length-1].trim();
+        }catch(e){
+          console.log(e);
+        }
+      }
+  
+      const food = hit._source;
+      food.id = hit._id;
+      foods.push(food);
+    }
+  
+    json = {size: foods.length, total: total, foods : foods};
+  }else{
+    json = {size: 0, total: 0, foods: []};
+  }
+  return json;
 }
 
 // exports.importCsv = (req, res) => {
