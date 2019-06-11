@@ -220,8 +220,16 @@ exports.getSecretKey = async (req, res) => {
 }
 
 exports.getSecretFoodInfoById = async (req, res) => {
-  const body = await callGetFoodById(1);
+  const { id } = req.params;
+  const body = await callGetFoodById(id);
   console.log(body);
+  const json = JSON.parse(body);
+  res.json(json);
+}
+
+exports.searchSecretFood = async (req, res) => {
+  let { foodName } =  req.query;;
+  const body = await callSearch(foodName);
   const json = JSON.parse(body);
   res.json(json);
 }
@@ -229,10 +237,11 @@ exports.getSecretFoodInfoById = async (req, res) => {
 let access_token = "";
 
 callGetFoodById = async (id) => {
+  
   let options = await getApiOption();
   options.qs = {
     method: "food.get",
-    food_id: 33691,
+    food_id: id,
     format: "json"
   }
   console.log(options);
@@ -246,6 +255,20 @@ callGetKey = async () => {
   return await request(keyOptions, function (error, response, body) {
     if (error){ return (error)};
     access_token = body.access_token;
+    return body;
+  });;
+}
+
+callSearch = async (foodName)=>{
+  let options = await getApiOption();
+  options.qs = {
+    method: "foods.search",
+    search_expression: foodName,
+    food_id: id,
+    max_results: 20
+  }
+  return await request(options, function (error, response, body) {
+    if (error){ return (error)};
     return body;
   });;
 }
