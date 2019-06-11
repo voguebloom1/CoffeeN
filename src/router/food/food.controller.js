@@ -230,6 +230,7 @@ exports.getSecretFoodInfoById = async (req, res) => {
 exports.searchSecretFood = async (req, res) => {
   let { foodName } =  req.query;;
   const body = await callSearch(foodName);
+  console.log(body);
   // const json = JSON.parse(body);
   res.json(body);
 }
@@ -241,8 +242,7 @@ callGetFoodById = async (id) => {
   let options = await getApiOption();
   options.qs = {
     method: "food.get",
-    food_id: id,
-    format: "json"
+    food_id: id
   }
   console.log(options);
   return await request(options, function (error, response, body) {
@@ -264,7 +264,8 @@ callSearch = async (foodName)=>{
   options.qs = {
     method: "foods.search",
     search_expression: foodName,
-    max_results: 20
+    max_results: 20,
+    format: "json"
   }
   return await request(options, function (error, response, body) {
     if (error){ return (error)};
