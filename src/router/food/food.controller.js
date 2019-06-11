@@ -193,8 +193,8 @@ generateResponseJson = (response, page) => {
   return json;
 }
 
-const clientId = "f47e708390a04225b79ab606067f2650";
-const clientSecret = "bd2b0e04bbbc499ab74970d129001ecf";
+const clientId = "9b52c785139541e6a501103caaf78134";
+const clientSecret = "96901104b2eb474a9cbea591f9bd57dd";
 
 var keyOptions = { 
   method: 'POST',
@@ -222,7 +222,8 @@ exports.getSecretKey = async (req, res) => {
 exports.getSecretFoodInfoById = async (req, res) => {
   const body = await callGetFoodById(1);
   console.log(body);
-  res.json(body);
+  const json = JSON.parse(body);
+  res.json(json);
 }
 
 let access_token = "";
