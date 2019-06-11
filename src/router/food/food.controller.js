@@ -232,7 +232,7 @@ exports.searchSecretFood = async (req, res) => {
   const body = await callSearch(foodName);
   console.log(body);
   const json = JSON.parse(body);
-  res.json(body);
+  res.json(json);
 }
 
 let access_token = "";
