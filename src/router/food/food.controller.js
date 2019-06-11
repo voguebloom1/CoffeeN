@@ -243,7 +243,10 @@ callGetFoodById = async (id) => {
   options.qs = {
     method: "food.get",
     food_id: id,
-    format: "json"
+    format: "json",
+    region: "KR",
+    language: "ko"
+
   }
   console.log(options);
   return await request(options, function (error, response, body) {
@@ -266,7 +269,9 @@ callSearch = async (foodName)=>{
     method: "foods.search",
     search_expression: foodName,
     max_results: 20,
-    format: "json"
+    format: "json",
+    region: "KR",
+    language: "ko"
   }
   return await request(options, function (error, response, body) {
     if (error){ return (error)};
