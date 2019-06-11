@@ -264,7 +264,6 @@ callSearch = async (foodName)=>{
   options.qs = {
     method: "foods.search",
     search_expression: foodName,
-    food_id: id,
     max_results: 20
   }
   return await request(options, function (error, response, body) {
