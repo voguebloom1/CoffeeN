@@ -231,7 +231,7 @@ exports.searchSecretFood = async (req, res) => {
   let { foodName } =  req.query;;
   const body = await callSearch(foodName);
   console.log(body);
-  // const json = JSON.parse(body);
+  const json = JSON.parse(body);
   res.json(body);
 }
 
