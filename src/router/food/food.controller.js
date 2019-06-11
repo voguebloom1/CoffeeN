@@ -242,7 +242,8 @@ callGetFoodById = async (id) => {
   let options = await getApiOption();
   options.qs = {
     method: "food.get",
-    food_id: id
+    food_id: id,
+    format: "json"
   }
   console.log(options);
   return await request(options, function (error, response, body) {
