@@ -3,6 +3,7 @@ var ElasticsearchCSV = require('elasticsearch-csv');
 var client = new elasticsearch.Client({
   host: 'http://172.104.114.192:9000'
 });
+const request = require('request-promise-native')
 
 // var esCSV = new ElasticsearchCSV({
 //     es: { index: 'foodtest', type: 'food', host: '172.104.114.192:9000' },
@@ -192,15 +193,71 @@ generateResponseJson = (response, page) => {
   return json;
 }
 
-// exports.importCsv = (req, res) => {
-//     esCSV.import()
-//     .then(function (response) {
-//         // Elasticsearch response for the bulk insert
-//         console.log(response);
-//     }, function (err) {
-//         // throw error
-//         throw err;
-//     });
+const clientId = "f47e708390a04225b79ab606067f2650";
+const clientSecret = "bd2b0e04bbbc499ab74970d129001ecf";
 
-//     res.sendStatus(200);
-// }
+var keyOptions = { 
+  method: 'POST',
+  url: 'https://oauth.fatsecret.com/connect/token',
+  auth : {
+     user : clientId, 
+     password : clientSecret
+  },
+  headers: { 'content-type': 'application/json'},
+  form: {
+     'grant_type': 'client_credentials',
+     'scope' : 'basic'
+  },
+  json: true 
+};
+
+
+exports.getSecretKey = async (req, res) => {
+
+  const body = await callGetKey();
+  console.log(body);
+  res.json(body);
+}
+
+exports.getSecretFoodInfoById = async (req, res) => {
+  const body = await callGetFoodById(1);
+  console.log(body);
+  res.json(body);
+}
+
+let access_token = "";
+
+callGetFoodById = async (id) => {
+  let options = await getApiOption();
+  options.qs = {
+    method: "food.get",
+    food_id: 33691,
+    format: "json"
+  }
+  console.log(options);
+  return await request(options, function (error, response, body) {
+    if (error){ return (error)};
+    return body;
+  });;
+}
+
+callGetKey = async () => {
+  return await request(keyOptions, function (error, response, body) {
+    if (error){ return (error)};
+    access_token = body.access_token;
+    return body;
+  });;
+}
+
+getApiOption = async () => {
+
+  if(!access_token){
+    await callGetKey();
+  }
+  let options = { 
+    method: 'POST',
+    uri: 'https://platform.fatsecret.com/rest/server.api',
+    headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+ access_token }
+  };
+  return options;
+}
