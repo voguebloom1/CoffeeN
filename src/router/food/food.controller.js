@@ -230,8 +230,8 @@ exports.getSecretFoodInfoById = async (req, res) => {
 exports.searchSecretFood = async (req, res) => {
   let { foodName } =  req.query;;
   const body = await callSearch(foodName);
-  const json = JSON.parse(body);
-  res.json(json);
+  // const json = JSON.parse(body);
+  res.json(body);
 }
 
 let access_token = "";
