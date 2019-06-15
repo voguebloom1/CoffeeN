@@ -5,18 +5,16 @@ var client = new elasticsearch.Client({
 });
 const request = require('request-promise-native')
 
-// var esCSV = new ElasticsearchCSV({
-//     es: { index: 'foodtest', type: 'food', host: '172.104.114.192:9000' },
-//     csv: { filePath: 'E:/git/foods4.csv', headers: true }
-// });
-
-const index = 'foods';
-const type = 'food';
+const default_index = 'foods';
+const default_type = 'food';
 
 // Food 정보 Create API
 // @param Object Food
 // @method POST
 exports.createFood = async (req, res) => {
+
+  let { index, type } = getIndexAndType(req);
+
   const { count } = await client.count({
     index: index
   });
@@ -41,7 +39,8 @@ exports.createFood = async (req, res) => {
 // Food 정보 업데이트 API
 exports.updateFoods = async (req, res) => {
     const { id } = req.params;
-    console.log(id);
+    let { index, type } = getIndexAndType(req);
+
     const food = req.body;
     const response = await client.update({
       index: index,
@@ -52,14 +51,16 @@ exports.updateFoods = async (req, res) => {
           food_group:     food.food_group,
           food_name:      food.food_name,
           size:           food.size,
+          unit:           food.unit,
           calorie:        food.calorie,
           carbohydreate:  food.carbohydrate,
           protein:        food.protein,
           fat:            food.fat,
           sugars:         food.sugars,
+          calcium:        food.calcium, 
           salt:           food.salt,
           cholesterol:    food.cholesterol,
-          saturaated_fat: food.saturaated_fat,
+          saturated_fat:  food.saturated_fat,
           trans_fat:      food.trans_fat,
           caffeine:       food.caffeine,
           year:           food.year
@@ -73,8 +74,8 @@ exports.updateFoods = async (req, res) => {
 // @param String food_name
 // @method Get
 exports.searchFood = async (req, res) => {
-
-    let { foodName, page } =  req.query;
+    let { foodName, page } = req.query;
+    let { index, type } = getIndexAndType(req);
     console.log(req.query);
     if(page == undefined){
       page = 1;
@@ -104,6 +105,11 @@ exports.searchFood = async (req, res) => {
 // Food List API
 exports.getFoods = async (req, res) => {
   let { page, size } = req.query;
+  let { index, type } = getIndexAndType(req);
+
+  console.log(index);
+  console.log(type);
+
   if(page == undefined){
     page = 0;
   }  
@@ -128,7 +134,8 @@ exports.getFoods = async (req, res) => {
 
 // Food List API
 exports.getFoodbyId = async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+    let { index, type } = getIndexAndType(req);
     try{
       const response = await client.get({
         id: id,
@@ -146,6 +153,8 @@ isValidFoodData = (food) => {
   if(food.food_group != undefined 
     && food.food_name != undefined 
     && food.size != undefined
+    && food.unit != undefined
+    && food.calcium != undefined
     && food.calorie != undefined
     && food.carbohydrate != undefined
     && food.protein != undefined
@@ -193,8 +202,8 @@ generateResponseJson = (response, page) => {
   return json;
 }
 
-const clientId = "9b52c785139541e6a501103caaf78134";
-const clientSecret = "96901104b2eb474a9cbea591f9bd57dd";
+const clientId = "f47e708390a04225b79ab606067f2650";
+const clientSecret = "a61e5107c4f0405ab594d710dea9d9b7";
 
 var keyOptions = { 
   method: 'POST',
@@ -290,4 +299,17 @@ getApiOption = async () => {
     headers: { 'content-type': 'application/json', 'Authorization': 'Bearer '+ access_token }
   };
   return options;
+}
+
+getIndexAndType = (req) => {
+  let { index, type } = req.query;
+  if(!index){
+    index = default_index;
+  }
+  if(!type){
+    type = default_type;
+  }
+
+
+  return { index: index, type : type };
 }
