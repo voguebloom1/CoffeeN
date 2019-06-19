@@ -12,7 +12,7 @@ exports.searchFoodName = async (req, res) => {
     const resResult = [];
     if(jsonResponse.pageInfo.totalCount > 0){
       for(item of jsonResponse.items){
-        if(item.clsNm.includes('가공식품') && item.gnlOwnerNm ){
+        if(item.clsNm.includes('가공식품>음료류')){
           resResult.push(item);
         }
       }
@@ -31,10 +31,16 @@ exports.getFoodInfoById = async (req, res) => {
 
   console.log('getFoodInfoById');
   const { id } = req.params;
-  const response = await callDetailApi(id);
-  const jsonResponse = JSON.parse(response);
+  try{
+    const response = await callDetailApi(id);
+    const jsonResponse = JSON.parse(response);
+  
+    res.json(jsonResponse);
+  }catch(e){
+    console.log(e);
+    res.json({message: "no Data"});
+  }
 
-  res.json(jsonResponse);
 }
 
 callSearchApi = async (foodName, page, size) => {
@@ -46,13 +52,14 @@ callSearchApi = async (foodName, page, size) => {
             searchValue: foodName,
             page: page,
             size: size,
-            searchField: 'searchProductNm'
+            searchField: 'searchProductNm',
+            imgType: 'IMG_250_PNG'
         }
       };
     // console.log(options);
     return await request(options, function (error, response, body) {
       if (error){
-        return (error)
+        return error;
       };
       return body;
     });;
@@ -67,7 +74,7 @@ callDetailApi = async (id) => {
 
   return await request(options, function (error, response, body) {
     if (error){
-      return (error)
+      return error;
     };
     return body;
   });;
