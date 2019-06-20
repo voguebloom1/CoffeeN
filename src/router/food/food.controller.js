@@ -87,6 +87,8 @@ exports.searchFood = async (req, res) => {
         index: index,
         type: type,
         body: {
+          "from": page,
+          "size": 1000,
           "query": {
             "match":{
               "food_name" : foodName
