@@ -19,6 +19,7 @@ exports.createFood = async (req, res) => {
     index: index
   });
   const food = req.body;
+  console.log(food);
   if(isValidFoodData(food)) {
     try {
       const response = await client.create({
@@ -114,7 +115,7 @@ exports.getFoods = async (req, res) => {
     page = 0;
   }  
   if(size == undefined){
-    size = 10;
+    size = 200;
   }
   const response = await client.search({
     index: index,
