@@ -61,7 +61,7 @@ exports.updateFoods = async (req, res) => {
           calcium:        food.calcium, 
           salt:           food.salt,
           cholesterol:    food.cholesterol,
-          saturated_fat:  food.saturated_fat,
+          saturaated_fat:  food.saturaated_fat,
           trans_fat:      food.trans_fat,
           caffeine:       food.caffeine,
           year:           food.year
@@ -171,6 +171,7 @@ isValidFoodData = (food) => {
     && food.year != undefined) {
       isValid = true;
     }
+  console.log('valid : '+ isValid);
   return isValid;
 }
 
