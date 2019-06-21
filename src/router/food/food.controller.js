@@ -30,9 +30,11 @@ exports.createFood = async (req, res) => {
       });
       res.json(response);
     } catch(e) {
+      console.log(e);
       res.send("ElasticSearch Something Wrong");
     }
   } else {
+    console.log("Invalid Data, Please Check Food Data Spec")
     res.send("Invalid Data, Please Check Food Data Spec");
   }
 }
@@ -79,7 +81,7 @@ exports.searchFood = async (req, res) => {
     let { index, type } = getIndexAndType(req);
     console.log(req.query);
     if(page == undefined){
-      page = 1;
+      page = 0;
     }  
     let response
     try{
@@ -88,16 +90,38 @@ exports.searchFood = async (req, res) => {
         type: type,
         body: {
           "from": page,
-          "size": 1000,
+          "size": 20,
           "query": {
-            "match":{
-              "food_name" : foodName
+            "function_score":{
+              "query":{
+                "match":{
+                  "food_name" : foodName
+                }
+              },
+                "functions": [
+                {
+                "weight": 1.5,
+                "filter":{
+                  "term": {
+                    "food_group": "음료"
+                  }
+                }
+                },
+                {
+                "weight": 0.5,
+                "filter":{
+                  "term": {
+                    "caffeine": 0
+                  }
+                }
+                }
+              
+              ]
             }
-          },
-            "explain": true
+          }
         }
       });
-    }catch(e){screen
+    }catch(e){
       response = undefined;
     }
     const json = generateResponseJson(response);
@@ -117,7 +141,7 @@ exports.getFoods = async (req, res) => {
     page = 0;
   }  
   if(size == undefined){
-    size = 200;
+    size = 20;
   }
   const response = await client.search({
     index: index,
