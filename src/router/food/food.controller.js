@@ -6,7 +6,7 @@ var client = new elasticsearch.Client({
 const request = require('request-promise-native')
 
 const default_index = 'product';
-const default_type = 'coffeine';
+const default_type = 'caffeine';
 
 // Food 정보 Create API
 // @param Object Food
