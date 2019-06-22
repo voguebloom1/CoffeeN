@@ -5,8 +5,8 @@ var client = new elasticsearch.Client({
 });
 const request = require('request-promise-native')
 
-const default_index = 'foods';
-const default_type = 'food';
+const default_index = 'product';
+const default_type = 'coffeine';
 
 // Food 정보 Create API
 // @param Object Food
@@ -63,7 +63,7 @@ exports.updateFoods = async (req, res) => {
           calcium:        food.calcium, 
           salt:           food.salt,
           cholesterol:    food.cholesterol,
-          saturaated_fat:  food.saturaated_fat,
+          saturated_fat:  food.saturated_fat,
           trans_fat:      food.trans_fat,
           caffeine:       food.caffeine,
           year:           food.year
@@ -221,7 +221,7 @@ isValidFoodData = (food) => {
     && food.sugars != undefined
     && food.salt != undefined
     && food.cholesterol != undefined
-    && food.saturaated_fat != undefined
+    && food.saturated_fat != undefined
     && food.trans_fat != undefined
     && food.caffeine != undefined
     && food.year != undefined) {
