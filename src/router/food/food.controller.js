@@ -91,7 +91,6 @@ exports.searchFood = async (req, res) => {
         body: {
           "from": page,
           "size": 10,
-          "min_score": 3,
           "query": {
             "function_score":{
               "query":{
