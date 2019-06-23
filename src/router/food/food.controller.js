@@ -66,7 +66,7 @@ exports.updateFoods = async (req, res) => {
           saturated_fat:  food.saturated_fat,
           trans_fat:      food.trans_fat,
           caffeine:       food.caffeine,
-          year:           food.year
+          year:           food.year,
         }
       }
     });
@@ -248,9 +248,14 @@ generateResponseJson = (response, page) => {
           console.log(e);
         }
       }
-  
+
       const food = hit._source;
       food.id = hit._id;
+      console.log(food.img);
+      if(!food.img){
+        food.img = "";
+      }
+    
       foods.push(food);
     }
   
