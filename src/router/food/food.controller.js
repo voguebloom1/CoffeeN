@@ -90,7 +90,8 @@ exports.searchFood = async (req, res) => {
         type: type,
         body: {
           "from": page,
-          "size": 20,
+          "size": 10,
+          "min_score": 3,
           "query": {
             "function_score":{
               "query":{
@@ -106,16 +107,7 @@ exports.searchFood = async (req, res) => {
                     "food_group": "음료"
                   }
                 }
-                },
-                {
-                "weight": 0.5,
-                "filter":{
-                  "term": {
-                    "caffeine": 0
-                  }
-                }
-                }
-              
+                }              
               ]
             }
           }
@@ -205,6 +197,14 @@ exports.getFoodbyId = async (req, res) => {
     }catch(e){
       res.send("Not Found");
     }
+}
+
+// 선택하는양 측정
+exports.updateStatistics = async (req,res) => {
+  let { id } = req.params;
+  console.log('updateStatistics');
+  console.log(id);
+  res.send("Success")
 }
 
 isValidFoodData = (food) => {

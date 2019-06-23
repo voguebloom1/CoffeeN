@@ -8,6 +8,8 @@ router.get('/foods/:id', controller.getFoodbyId);
 router.put('/foods/:id', controller.updateFoods);
 router.post('/foods', controller.createFood);
 
+router.get('/foods/statistics/:id', controller.updateStatistics)
+
 
 
 // router.get('/foods/secret/key', controller.getSecretKey);
