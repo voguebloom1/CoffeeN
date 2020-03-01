@@ -1,9 +1,13 @@
+require('dotenv').config();
+
 const express = require('express');
-const path    = require('path');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const app = express();
 const port = 10000;
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -19,9 +23,15 @@ var options = {
       res.set('x-timestamp', Date.now());
       res.header('Cache-Control', 'public, max-age=1d');
     }
-  };    
+};    
 
-app.use('/svc', require('./router/router'));
+mongoose.Promise = global.Promise;
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(()=>console.log('Successfully connected to mongodb'))
+  .catch(e => console.error(e));
+
+app.use('/svc', require('./router'));
 app.use('/', express.static(__dirname + '/public', options));
 
 app.listen(port, function () {

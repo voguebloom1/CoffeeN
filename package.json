@@ -1,7 +1,7 @@
 {
-  "name": "food_back_server",
+  "name": "pretty_account_server",
   "version": "0.0.1",
-  "description": "food api server",
+  "description": "pretty_account_server",
   "main": "index.js",
   "scripts": {
     "test": "nodemon src/app.js"
@@ -17,10 +17,12 @@
   },
   "homepage": "https://github.com/fireworkproject/food_back_server#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "elasticsearch": "^14.0.0",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "elasticsearch": "^16.6.0",
     "elasticsearch-csv": "0.0.3",
     "express": "^4.16.3",
+    "mongoose": "^5.9.2",
     "nodemon": "^1.19.1",
     "path": "^0.12.7",
     "request": "^2.85.0",
