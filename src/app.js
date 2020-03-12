@@ -7,8 +7,17 @@ const mongoose = require('mongoose');
 const app = express();
 const port = 10000;
 const cors = require('cors');
+const domains = ['http://localhost:3000'];
 
-app.use(cors());
+const corsOptions = {
+  origin: function(origin, callback){
+  	const isTrue = domains.indexOf(origin) !== -1;
+    callback(null, isTrue);
+  }
+  ,
+  credentials: true
+}
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
