@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const mask = require('./mask');
 const group = require('./group');
+const member = require('./member');
 
 
-router.use('/api/v1', mask);
 router.use('/api/v1', group);
+router.use('/api/v1', member);
 
 module.exports = router;
 

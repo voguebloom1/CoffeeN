@@ -10,11 +10,15 @@ exports.getGroups = (req, res) => {
 }
 
 exports.getGroup = (req, res) => {
-    res.json({})
+    const {group_id} = req.params;
+    Group.findById(group_id)
+        .then(group => {
+            console.log(group);
+            res.send(group);
+        });
 }
 
 exports.insertGroup = (req, res) => {
-
     const group = new Group(req.body);
     if(group.name){
         Group.create(group)
@@ -25,4 +29,20 @@ exports.insertGroup = (req, res) => {
     }
 
 
+}
+
+exports.updateGroup = (req, res) => {
+    const group = req.body;
+    const {group_id} = req.params;
+    Group.findByGroupIdAndUpdate(group_id, group)
+        .then((group) => res.json(group))
+        .catch(err => res.status(500).send(err));
+}
+
+exports.addMember = (req, res) => {
+    const member = req.body;
+    const {group_id} = req.params;
+    Group.findByGroupIdAndAddMember(group_id, member)
+        .then(group => res.json(group))
+        .catch(err => res.status(500).send(err));
 }
