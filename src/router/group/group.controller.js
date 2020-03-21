@@ -26,9 +26,7 @@ exports.insertGroup = (req, res) => {
         .catch(err => res.status(500).send(err));
     }else{
         res.status(400).send("이름이 필요해요!");
-    }
-
-
+   }
 }
 
 exports.updateGroup = (req, res) => {
@@ -39,10 +37,26 @@ exports.updateGroup = (req, res) => {
         .catch(err => res.status(500).send(err));
 }
 
+exports.getMembers = (req, res) => {
+    const {group_id} = req.params;
+    Group.findById(group_id)
+        .then(group => {
+            res.send(group.members);
+        });
+}
+
 exports.addMember = (req, res) => {
     const member = req.body;
     const {group_id} = req.params;
     Group.findByGroupIdAndAddMember(group_id, member)
         .then(group => res.json(group))
+        .catch(err => res.status(500).send(err));
+}
+
+exports.removeMember = (req, res) => {
+
+    const { group_id, member_id } = req.params; 
+    Group.findByGroupIdAndRemoveMember(group_id, member_id)
+        .then((group) => res.json(group))
         .catch(err => res.status(500).send(err));
 }

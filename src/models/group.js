@@ -55,12 +55,12 @@ groupSchema.statics.findByGroupIdAndAddMember = function(group_id, new_member){
 groupSchema.statics.findByGroupIdAndRemoveMember = function(group_id, member_id){
     return this.findOne({_id: group_id})
         .then(group => {
-            // group.members.forEach((item, index, object) => {
-            //     if(item._id = member_id){
-            //         object.splice(index, 1);
-            //     }
-            // })
-            // console.log(group)
+            const arr = group.members;  
+            for(let i = arr.length-1; i>=0; i--){
+                if(arr[i]._id == member_id){
+                    group.members.splice(i, 1);
+                }
+            }
             return group.save();
         }) 
 }
