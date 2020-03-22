@@ -9,6 +9,9 @@ const port = 10000;
 const cors = require('cors');
 const domains = ['http://localhost:3000'];
 
+const morgan = require('morgan');
+const winston = require('../config/winston')
+
 const corsOptions = {
   origin: function(origin, callback){
   	const isTrue = domains.indexOf(origin) !== -1;
@@ -20,6 +23,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(morgan('combined', {stream: winston.stream})); 
 
 
 var options = {
@@ -37,13 +41,13 @@ var options = {
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(()=>console.log('Successfully connected to mongodb'))
-  .catch(e => console.error(e));
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+  .then(()=>winston.info('Successfully connected to mongodb'))
+  .catch(e => winston.error(e));
 
 app.use('/svc', require('./router'));
 app.use('/', express.static(__dirname + '/public', options));
 
 app.listen(port, function () {
-    console.log('Example app listening on port %s!', port);
+    winston.info('Example app listening on port : ' + port);
 });
